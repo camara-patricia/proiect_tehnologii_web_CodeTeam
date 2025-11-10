@@ -1,0 +1,1 @@
+console.log("Salut lume cu stima si respect!");
