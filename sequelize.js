@@ -37,7 +37,7 @@ sequelize.sync({alter: true}).then(()=>{
             {
                 name: "Hackathon Winter",
                 state: "OPEN",
-                groupId: 3,
+                groupId: 2,
                 startTime: new Date("2025-12-20T08:00:00"),
                 endTime: new Date("2025-12-20T20:00:00"),
                 accessCode: "HACK789",

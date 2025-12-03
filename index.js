@@ -4,8 +4,10 @@ const express = require("express");
 const sequelize = require("./sequelize");
 
 // router
-const router = require('./services/projectServices');
-// entities
+// Import routers
+const eventRouter = require("./services/eventServices");
+const eventGroupRouter = require("./services/eventGroupServices");
+const userRouter = require("./services/userServices");
 
 require('./models/event');
 require('./models/eventGroup');
@@ -14,7 +16,10 @@ require('./models/user');
 const app = express();
 app.use(express.json());
 
-app.use('/api', router);
+// Bind routers
+app.use("/api", eventRouter);
+app.use("/api", eventGroupRouter);
+app.use("/api", userRouter);
 app.listen(8080, async () => {
     console.log("Server started on http://localhost:8080")
 
