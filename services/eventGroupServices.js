@@ -16,17 +16,22 @@ router
     .route('/eventGroups')
     .get(async (req, res) => {
         try {
-            const events = await EventGroup.findAll();
-            res.status(200).json(events);
+            const eventGroups = await EventGroup.findAll();
+            res.status(200).json({
+                message: `Found ${eventGroups.length} event groups`,
+                eventGroups
+            });
         } catch (err) {
             next(err);
         }
     })
     .post(async (req, res) => {
         try {
-            const object = await EventGroup.create(req.body);
-
-            res.json(object);
+            const eventGroup = await EventGroup.create(req.body);
+            res.status(201).json({
+                message: `Event group ${eventGroup.name} created successfully`,
+                eventGroup
+            });
         } catch (err) {
             next(err);
         }
@@ -37,12 +42,14 @@ router
     .route('/eventGroup/:id')
     .get(async (req, res) => {
         try {
-            const obj = await EventGroup.findByPk(req.params.id);
-            if (obj) {
-                res.status(200).json(obj);
-
+            const eventGroup = await EventGroup.findByPk(req.params.id);
+            if (eventGroup) {
+                res.status(200).json({
+                    message: `Event group ${eventGroup.name} found`,
+                    eventGroup
+                });
             } else {
-                res.status(404).json({ error: `EVent Group with id: ${req.params.id} not found` })
+                res.status(404).json({ error: `Event Group with id: ${req.params.id} not found` })
             }
         } catch (err) {
             res.status(500).json(err);
@@ -50,11 +57,13 @@ router
     })
     .put(async (req, res) => {
         try {
-            const obj = await EventGroup.findByPk(req.params.id);
-            if (obj) {
-                const updatedObj = await obj.update(req.body)
-                res.status(200).json(updatedObj);
-
+            const eventGroup = await EventGroup.findByPk(req.params.id);
+            if (eventGroup) {
+                const updatedEventGroup = await eventGroup.update(req.body)
+                res.status(200).json({
+                    message: `Event group ${updatedEventGroup.name} updated successfully`,
+                    eventGroup: updatedEventGroup
+                });
             } else {
                 res.status(404).json({ error: `Event Group with id: ${req.params.id} not found` })
             }
@@ -64,11 +73,13 @@ router
     })
     .delete(async (req, res) => {
         try {
-            const obj = await EventGroup.findByPk(req.params.id);
-            if (obj) {
-                const result = await obj.destroy();
-                res.status(200).send(`Event Group with id ${req.params.id} is deleted`);
-
+            const eventGroup = await EventGroup.findByPk(req.params.id);
+            if (eventGroup) {
+                const name = eventGroup.name;
+                await eventGroup.destroy();
+                res.status(200).json({
+                    message: `Event group ${name} deleted successfully`
+                });
             } else {
                 res.status(404).json({ error: `Event Group with id: ${req.params.id} not found` })
             }

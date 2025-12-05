@@ -8,10 +8,19 @@ const sequelize = require("./sequelize");
 const eventRouter = require("./services/eventServices");
 const eventGroupRouter = require("./services/eventGroupServices");
 const userRouter = require("./services/userServices");
+const eventUserRouter = require("./services/eventUserServices");
 
-require('./models/event');
-require('./models/eventGroup');
-require('./models/user');
+//Import models to create associations
+const Event =  require('./models/event');
+const EventGroup = require('./models/eventGroup');
+const User = require('./models/user');
+const EventUser = require('./models/eventUser');
+
+EventGroup.hasMany(Event, { foreignKey: 'groupId', onDelete: 'CASCADE' });
+Event.belongsTo(EventGroup, { foreignKey: 'groupId' });
+
+Event.belongsToMany(User, { through: 'EventUser', foreignKey: 'eventId' });
+User.belongsToMany(Event, { through: 'EventUser', foreignKey: 'userId' });
 
 const app = express();
 
@@ -29,6 +38,16 @@ app.use(express.json());
 app.use("/api", eventRouter);
 app.use("/api", eventGroupRouter);
 app.use("/api", userRouter);
+app.use("/api", eventUserRouter);
+app.get("/create", async (req, res, next) => {
+  try {
+    await sequelize.sync({ force: true });
+    res.status(201).json({ message: "Database created with the models." });
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.listen(8080, async () => {
     console.log("Server started on http://localhost:8080")
 
@@ -47,3 +66,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "500 - Server Error" });
 });
 
+
+// - middle ware pentru erori (easier, fancier)
+// - hasmany si fkeys ---> belongsTo
