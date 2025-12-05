@@ -69,3 +69,5 @@ app.use((err, req, res, next) => {
 
 // - middle ware pentru erori (easier, fancier)
 // - hasmany si fkeys ---> belongsTo
+
+//test pentru e-mail eronat commit
