@@ -6,6 +6,13 @@ const { Op } = require('sequelize');
 const router = express.Router();
 //console.log("User router loaded");
 
+// Create a middleware to handle 500 status errors.
+// app.use((err, req, res, next) => {
+//   console.error("[ERROR]:" + err);
+//   res.status(500).json({ message: "500 - Server Error" });
+// });
+
+
 router
     .route('/users')
     .get(async (req, res) => {
@@ -13,7 +20,7 @@ router
             const events = await User.findAll();
             res.status(200).json(events);
         } catch (err) {
-            res.status(500).json({ error: 'Failed to retrieve events', details: err});
+            next(err);
         }
     })
     .post(async (req, res) => {
@@ -22,7 +29,7 @@ router
 
             res.json(object);
         } catch (err) {
-            res.status(500).json(err);
+            next(err);
         }
     });
 
@@ -53,7 +60,7 @@ router.route('/users/filter').get(async (req, res) => {
         res.status(200).json(users);
 
     } catch (err) {
-        res.status(500).json({ error: 'Failed to retrieve filtered employees', details: err });
+        next(err);
     }
 });
 
@@ -70,7 +77,7 @@ router
                 res.status(404).json({ error: `User with id: ${req.params.id} not found` })
             }
         } catch (err) {
-            res.status(500).json(err);
+            next(err);
         }
     })
     .put(async (req, res) => {
@@ -84,7 +91,7 @@ router
                 res.status(404).json({ error: `User with id: ${req.params.id} not found` })
             }
         } catch (err) {
-            res.status(500).json(err);
+            next(err);
         }
     })
     .delete(async (req, res) => {
@@ -98,7 +105,7 @@ router
                 res.status(404).json({ error: `User with id: ${req.params.id} not found` })
             }
         } catch (err) {
-            res.status(500).json(err);
+            next(err);
         }
     })
 
@@ -112,7 +119,7 @@ router.get('/simplified-users', async (req, res) => {
             });
         res.status(200).json(objs);
     } catch (err) {
-        res.status(500).json(err);
+        next(err);
     }
 })
 

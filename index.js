@@ -14,7 +14,16 @@ require('./models/eventGroup');
 require('./models/user');
 
 const app = express();
+
+
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 app.use(express.json());
+
+
 
 // Bind routers
 app.use("/api", eventRouter);
@@ -28,6 +37,13 @@ app.listen(8080, async () => {
         console.log("Connection has been established successfully");
 
     } catch (err) {
-        console.error("Unable to connect to the database: ", err);
+        console.error("Unable to connect to the database:", err);
     }
-})
+});
+
+// Create a middleware to handle 500 status errors.
+app.use((err, req, res, next) => {
+  console.error("[ERROR]:" + err);
+  res.status(500).json({ message: "500 - Server Error" });
+});
+

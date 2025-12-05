@@ -5,6 +5,13 @@ const { Op } = require('sequelize');
 
 const router = express.Router();
 
+// // Create a middleware to handle 500 status errors.
+// app.use((err, req, res, next) => {
+//   console.error("[ERROR]:" + err);
+//   res.status(500).json({ message: "500 - Server Error" });
+// });
+
+
 router
     .route('/eventGroups')
     .get(async (req, res) => {
@@ -12,7 +19,7 @@ router
             const events = await EventGroup.findAll();
             res.status(200).json(events);
         } catch (err) {
-            res.status(500).json({ error: 'Failed to retrieve events', details: err});
+            next(err);
         }
     })
     .post(async (req, res) => {
@@ -21,7 +28,7 @@ router
 
             res.json(object);
         } catch (err) {
-            res.status(500).json(err);
+            next(err);
         }
     });
 
@@ -52,7 +59,7 @@ router
                 res.status(404).json({ error: `Event Group with id: ${req.params.id} not found` })
             }
         } catch (err) {
-            res.status(500).json(err);
+            next(err);
         }
     })
     .delete(async (req, res) => {
@@ -66,7 +73,7 @@ router
                 res.status(404).json({ error: `Event Group with id: ${req.params.id} not found` })
             }
         } catch (err) {
-            res.status(500).json(err);
+           next(err);
         }
     })
 

@@ -18,10 +18,8 @@ const Event = sequelize.define(
             }
         },
         state: {
-            type: DataTypes.STRING,
-            validate: {
-                isIn: [['OPEN', 'CLOSED']]
-            },
+            type: DataTypes.ENUM,
+            values: ['OPEN', 'CLOSED'],
             allowNull: false,
             defaultValue: 'CLOSED'
         },

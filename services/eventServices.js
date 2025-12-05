@@ -5,6 +5,16 @@ const { Op } = require('sequelize');
 
 const router = express.Router();
 
+
+
+// Create a middleware to handle 500 status errors.
+// app.use((err, req, res, next) => {
+//   console.error("[ERROR]:" + err);
+//   res.status(500).json({ message: "500 - Server Error" });
+// });
+
+
+
 router
     .route('/events')
     .get(async (req, res) => {
@@ -12,7 +22,7 @@ router
             const events = await Event.findAll();
             res.status(200).json(events);
         } catch (err) {
-            res.status(500).json({ error: 'Failed to retrieve events', details: err});
+          next(err);
         }
     })
     .post(async (req, res) => {
@@ -21,7 +31,7 @@ router
 
             res.json(object);
         } catch (err) {
-            res.status(500).json(err);
+            next(err);
         }
     });
 
@@ -47,7 +57,7 @@ router
             const events = await Event.findAll({ where: whereClause });
             res.status(200).json(events);
         } catch (err) {
-            res.status(500).json({ error: 'Failed to filter events', details: err});
+           next(err);
         }   
 });
 
@@ -64,7 +74,7 @@ router
                 res.status(404).json({ error: `Event with id: ${req.params.id} not found` })
             }
         } catch (err) {
-            res.status(500).json(err);
+            next(err);
         }
     })
     .put(async (req, res) => {
@@ -78,7 +88,7 @@ router
                 res.status(404).json({ error: `Event with id: ${req.params.id} not found` })
             }
         } catch (err) {
-            res.status(500).json(err);
+           next(err);
         }
     })
     .delete(async (req, res) => {
@@ -92,7 +102,7 @@ router
                 res.status(404).json({ error: `Event with id: ${req.params.id} not found` })
             }
         } catch (err) {
-            res.status(500).json(err);
+           next(err);
         }
     })
 
@@ -106,7 +116,7 @@ router.get('/simplified-events', async (req, res) => {
             });
         res.status(200).json(objs);
     } catch (err) {
-        res.status(500).json(err);
+        next(err);
     }
 })
 
@@ -128,7 +138,7 @@ router.get('/sort-employees/:field', async (req, res) => {
         res.status(200).json(sortedObj);
 
     } catch (err) {
-        res.status(500).json(err);
+        next(err);
     }
 });
 
