@@ -94,13 +94,6 @@ export function LoginForm({ onSwitchToRegister }) {
           </button>
         </p>
       </div>
-
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-        <p className="text-xs text-gray-600 font-semibold mb-2">Conturi demo:</p>
-        <p className="text-xs text-gray-600">Event Planner: ana.popa@example.com</p>
-        <p className="text-xs text-gray-600">Utilizator: mihai.ionescu@example.com</p>
-        <p className="text-xs text-gray-500 mt-1">(orice parolă)</p>
-      </div>
     </div>
   );
 }

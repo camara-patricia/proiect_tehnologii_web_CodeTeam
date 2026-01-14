@@ -80,6 +80,12 @@ export const eventGroupsAPI = {
     const response = await fetch(`${API_URL}/event-groups/${id}`, { method: 'DELETE' });
     await handleJson(response);
   },
+
+  exportToCsv: async (groupId) => {
+    const response = await fetch(`${API_URL}/event-groups/${groupId}/export`);
+    if (!response.ok) throw new Error(`Export failed (${response.status})`);
+    return response.blob();
+  },
 };
 
 export const eventsAPI = {
