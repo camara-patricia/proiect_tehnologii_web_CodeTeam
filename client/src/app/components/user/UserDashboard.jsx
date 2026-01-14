@@ -29,7 +29,12 @@ const handleCodeSubmit = async (e) => {
     toast.success("Prezență confirmată!");
     setCode("");
   } catch (error) {
-    toast.error("Cod invalid sau eveniment inexistent");
+    const msg = error.message || "Cod invalid sau eveniment inexistent";
+    if (msg.toLowerCase().includes("închis")) {
+      toast.warning(msg);
+    } else {
+      toast.error(msg);
+    }
   } finally {
     setLoading(false);
   }

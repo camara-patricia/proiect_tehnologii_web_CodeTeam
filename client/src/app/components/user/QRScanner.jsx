@@ -23,21 +23,31 @@ export function QRScanner({ onSuccess, onClose }) {
           },
           async (decodedText) => {
             try {
-              const [eventId, code] = decodedText.includes(':') 
-                ? decodedText.split(':')
-                : [null, decodedText];
+              // QR poate conține "eventId:accessCode" sau doar "accessCode"
+              const accessCode = decodedText.includes(':')
+                ? decodedText.split(':')[1]
+                : decodedText;
 
-              await eventUsersAPI.markAttendance(
-                eventId ? parseInt(eventId) : null,
-                code
-              );
+              const user = JSON.parse(localStorage.getItem('user') || 'null');
+              const userId = user?.id;
+              if (!userId) {
+                toast.error('Trebuie să fii autentificat pentru a confirma prezența');
+                return;
+              }
+
+              await eventUsersAPI.markAttendance(accessCode, userId);
 
               toast.success('Prezență confirmată!');
               isRunningRef.current = false;
               await scanner.stop();
               onSuccess();
             } catch (error) {
-              toast.error('Cod invalid sau eveniment inexistent');
+              const msg = error.message || 'Cod invalid sau eveniment inexistent';
+              if (msg.toLowerCase().includes('închis')) {
+                toast.warning(msg);
+              } else {
+                toast.error(msg);
+              }
             }
           },
           (error) => {

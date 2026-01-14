@@ -166,7 +166,12 @@ router.post('/events/attend', async (req, res, next) => {
       return res.status(404).json({ message: 'Cod invalid sau eveniment inexistent' });
     }
 
-    // 2) evită dublarea confirmării
+    // 2) verifică dacă evenimentul este DESCHIS
+    if (event.state !== 'OPEN') {
+      return res.status(403).json({ message: 'Evenimentul este închis — nu se pot confirma prezențe' });
+    }
+
+    // 3) evită dublarea confirmării
     const existing = await EventUser.findOne({
       where: { eventId: event.id, userId }
     });
@@ -175,7 +180,7 @@ router.post('/events/attend', async (req, res, next) => {
       return res.status(409).json({ message: 'Prezența a fost deja confirmată' });
     }
 
-    // 3) creează prezența
+    // 4) creează prezența
     const attendance = await EventUser.create({
       eventId: event.id,
       userId
